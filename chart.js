@@ -25,6 +25,12 @@ function showTooltip(tooltipAnchor, entity) {
         <span class='heading'>${commit.commit.author.name}</span>
         <span class='body'>${commit.commit.message}<br /><a href='${commit.html_url}' target='_blank'>View Here</a></span>
         `);
+    } else if (type === 'crash') {
+        const crash = entity.datum;
+        tooltipAnchor.html(`
+        <span class='heading'>Crash: ${crash['Exception Class Name']} at ${moment(crash['Crash report Date And Time']).format()}</span>
+        <span class='body'>App Verion: ${crash['App Version Name']}(${crash['App Version Code']})<br />Android Version: ${crash['Android OS Version']}<br /><a href='${crash['Crash Link']}' target='_blank'>View Here</a></span>
+        `);
     }
 
 
@@ -38,8 +44,8 @@ function showTooltip(tooltipAnchor, entity) {
 function renderNodes(points, targetQueryString) {
 
     var fillColorScale = new Plottable.Scales.Color()
-        .domain(["commit", "issue", "badReview (<=3)", "terribleReview (<=1)"])
-        .range(["#0052A5", "pink", "orange", "red"]);
+        .domain(["commit", "issue", "badReview (<=3)", "terribleReview (<=1)", "crash"])
+        .range(["#0052A5", "pink", "orange", "red", "purple"]);
 
     var legend = new Plottable.Components.Legend(fillColorScale);
     var title = new Plottable.Components.TitleLabel("Testing", 0)
@@ -110,11 +116,11 @@ function renderNodes(points, targetQueryString) {
 
     var guideline = new Plottable.Components.GuideLineLayer("vertical")
         .scale(xScale);
-
+        
     const chart = new Plottable.Components.Table([
         [title],
         [xAxis],
-        [new Plottable.Components.Group([guideline, plot, legend])]
+        [new Plottable.Components.Group([guideline, plot, legend, dragbox])]
     ]).renderTo(targetQueryString);
 
 
@@ -187,6 +193,16 @@ if (haveCachedData) {
                         p.x = moment(p['Review Submit Date and Time']).valueOf();
                         return p;
                     });
+            }),
+        fetch(`./crashes.json`)
+            .then(response => response.json())
+            .then(res => {
+                return res
+                    .map(p => {
+                        p.type = 'crash'
+                        p.x = moment(p['Crash Report Date And Time']).valueOf();
+                        return p;
+                    });
             })
     ]).then(types => {
         const data = types.reduce((acc, res) => acc.concat(res), []);
@@ -196,6 +212,7 @@ if (haveCachedData) {
 }
 
 loadGithubData
+    .then(data => data.sort((a, b) => a.x > b.x ? 1 : -1))
     .then(data => {
         renderNodes(data, '.commit-timeline');
     });

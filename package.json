@@ -1,0 +1,22 @@
+{
+  "name": "app-test-vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "chart.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ISNIT0/app-test-vis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ISNIT0/app-test-vis/issues"
+  },
+  "homepage": "https://github.com/ISNIT0/app-test-vis#readme",
+  "dependencies": {
+    "@google-cloud/storage": "^1.1.1"
+  }
+}
