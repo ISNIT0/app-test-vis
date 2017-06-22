@@ -15,7 +15,15 @@
 
 <body>
     <svg class="commit-timeline"></svg>
+    <button onclick='hardReload()'>Clear local data and reload</button>
 </body>
+
+<script>
+    function hardReload(){
+        localStorage.clear();
+        window.location.reload();
+    }
+</script>
 
 <script src="./chart.js"></script>
 

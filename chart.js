@@ -120,7 +120,7 @@ function renderNodes(points, targetQueryString) {
     const chart = new Plottable.Components.Table([
         [title],
         [xAxis],
-        [new Plottable.Components.Group([guideline, plot, legend, dragbox])]
+        [new Plottable.Components.Group([guideline, plot, legend])]
     ]).renderTo(targetQueryString);
 
 
